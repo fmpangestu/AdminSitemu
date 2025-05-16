@@ -6,6 +6,7 @@ import { navigationItems } from "./types/navigationItem";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LogOut, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import { LoadingIndicator } from "@/components/loaderUI";
 
 export default function RootLayout({
   children,
@@ -39,7 +40,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
       {isDashboardRoute ? (
         <div className="flex flex-col md:flex-row">
           {/* Sidebar - fixed position when scrolling */}
-          <div className="md:hidden flex items-center justify-between bg-gray-900 text-white p-4">
+          <div className="md:hidden flex items-center justify-between bg-gradient-to-r from-blue-700 to-sky-500 text-white p-4">
             <h1 className="text-xl font-bold">Mimin Sitemu</h1>
             <button
               onClick={toggleMobileSidebar}
@@ -49,7 +50,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
             </button>
           </div>
           <aside
-            className={`bg-gray-900 text-white p-4 md:fixed md:h-screen md:overflow-y-auto transition-all duration-300 
+            className={`bg-gradient-to-r from-blue-700 to-sky-500 text-white p-4 md:fixed md:h-screen md:overflow-y-auto transition-all duration-300 
             ${isSidebarCollapsed ? "md:w-20 " : "md:w-64 "} 
             ${isMobileSidebarOpen ? "fixed inset-0 z-50" : "hidden md:flex"} 
             md:flex md:flex-col md:justify-between`}
@@ -57,13 +58,13 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
             <nav className="relative">
               <button
                 onClick={toggleMobileSidebar}
-                className="md:hidden absolute top-0 right-0 p-2 text-white hover:text-gray-300"
+                className="md:hidden  absolute top-0 right-0 p-2 text-white hover:text-gray-300"
               >
                 <X size={24} />
               </button>
               <button
                 onClick={toggleSidebar}
-                className="hidden md:flex cursor-pointer absolute -right-3 -bottom-10 bg-gray-900 text-white p-1 rounded-full border border-gray-600 hover:bg-gray-800 "
+                className="hidden md:flex cursor-pointer absolute -right-3 -bottom-10 bg-gradient-to-r from-blue-700 to-sky-500 text-white p-1 rounded-full border border-blue-600 hover:bg-blue-800 "
               >
                 {isSidebarCollapsed ? (
                   <ChevronRight size={18} />
@@ -77,17 +78,17 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                 <div
                   className={`absolute inset-0 flex items-center transition-all duration-1000 ease-in-out ${
                     isSidebarCollapsed
-                      ? "transform -translate-x-50"
-                      : "transform translate-x-0"
+                      ? "md:transform -translate-x-50"
+                      : "md:transform translate-x-0"
                   }`}
                 >
                   <h1 className="text-xl font-bold">Mimin Sitemu</h1>
                 </div>
                 <div
-                  className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ease-in-out ${
+                  className={`absolute inset-0 hidden md:flex items-center justify-center transition-all duration-1000 ease-in-out ${
                     isSidebarCollapsed
-                      ? "transform translate-x-0"
-                      : "transform -translate-x-50"
+                      ? "md:transform translate-x-0"
+                      : "md:transform -translate-x-50"
                   }`}
                 >
                   <h1 className="text-xl font-bold">MS</h1>
@@ -103,8 +104,8 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                     <li key={item.path}>
                       <Link
                         href={item.path}
-                        className={`relative block overflow-hidden p-2 rounded group hover:text-black hover:font-semibold transition duration-300 ${
-                          isActive ? "text-black font-semibold" : ""
+                        className={`relative block overflow-hidden p-2 rounded group hover:text-blue-700 hover:font-semibold transition duration-300 ${
+                          isActive ? "text-blue-700 font-semibold" : ""
                         }`}
                       >
                         <span
@@ -118,7 +119,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                           {!isSidebarCollapsed && item.label}
                         </span>
                         <span
-                          className={`absolute inset-0 bg-gradient-to-r from-white to-gray-700 transition-all duration-300 ${
+                          className={`absolute inset-0 bg-gradient-to-r from-white to-sky-500 transition-all duration-300 ${
                             isActive ? "w-full" : "w-0 group-hover:w-full"
                           }`}
                         ></span>
@@ -153,11 +154,12 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
 
           {/* Main Content - add left padding on medium screens to account for fixed sidebar */}
           <main
-            className={`flex-1 p-6 transition-all duration-300 ${
+            className={`relative flex-1 p-6 transition-all duration-300 ${
               isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
             }`}
           >
             {children}
+            <LoadingIndicator />
           </main>
         </div>
       ) : (

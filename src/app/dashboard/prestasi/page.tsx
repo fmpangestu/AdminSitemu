@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -23,7 +24,6 @@ import {
 } from "@/components/ui/card";
 import { Toaster, toast } from "sonner";
 import { Loader2, Pencil, Trash, Eye } from "lucide-react";
-import Image from "next/image";
 
 // Dummy data untuk user dropdown - nanti bisa diganti dengan data dari API
 const users = [
@@ -32,73 +32,91 @@ const users = [
   { id: "3", name: "Staff" },
 ];
 
-// Dummy data untuk tabel organisasi
-const organisasiDummyData = [
+// Dummy data untuk tabel prestasi
+const prestasiDummyData = [
   {
     id: 1,
     user_id: "1",
     user_name: "Admin Utama",
-    jabatan: "Ketua",
-    nama: "Organisasi Mahasiswa",
-    image: "/favicon.ico",
+    title: "Juara 1 Kompetisi Coding",
+    tahun: "2023",
+    prestasi: "Medali Emas",
+    deskripsi:
+      "Berhasil memenangkan kompetisi coding tingkat nasional dengan mengembangkan aplikasi inovatif.",
     created_at: "2023-05-15",
   },
   {
     id: 2,
     user_id: "2",
     user_name: "Manager",
-    jabatan: "Sekretaris",
-    nama: "Tim Pengembang",
-    image: "/favicon.ico",
+    title: "Best Paper Award",
+    tahun: "2022",
+    prestasi: "Sertifikat & Penghargaan",
+    deskripsi:
+      "Mendapatkan penghargaan paper terbaik pada konferensi internasional teknologi informasi.",
     created_at: "2023-05-16",
   },
   {
     id: 3,
     user_id: "3",
     user_name: "Staff",
-    jabatan: "Bendahara",
-    nama: "Divisi Keuangan",
-    image: "/favicon.ico",
+    title: "Hackathon Regional",
+    tahun: "2021",
+    prestasi: "Juara 2",
+    deskripsi:
+      "Tim berhasil meraih juara 2 dalam hackathon regional dengan membuat solusi teknologi untuk masalah lingkungan.",
     created_at: "2023-05-17",
   },
 ];
 
-export default function Organisasi() {
+export default function Prestasi() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     user_id: "",
-    jabatan: "",
-    nama: "",
-    image: "",
+    title: "",
+    tahun: "",
+    prestasi: "",
+    deskripsi: "",
   });
   const [errors, setErrors] = useState({
     user_id: "",
-    jabatan: "",
-    nama: "",
-    image: "",
+    title: "",
+    tahun: "",
+    prestasi: "",
+    deskripsi: "",
   });
 
   // State untuk tabel
-  const [organisasiData, setOrganisasiData] = useState(organisasiDummyData);
+  const [prestasiData, setPrestasiData] = useState(prestasiDummyData);
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { user_id: "", jabatan: "", nama: "", image: "" };
+    const newErrors = {
+      user_id: "",
+      title: "",
+      tahun: "",
+      prestasi: "",
+      deskripsi: "",
+    };
 
     if (!formData.user_id) {
       newErrors.user_id = "User ID harus dipilih";
       isValid = false;
     }
 
-    if (!formData.jabatan) {
-      newErrors.jabatan = "Jabatan tidak boleh kosong";
+    if (!formData.title) {
+      newErrors.title = "Judul prestasi tidak boleh kosong";
       isValid = false;
     }
 
-    if (!formData.nama) {
-      newErrors.nama = "Nama tidak boleh kosong";
+    if (!formData.tahun) {
+      newErrors.tahun = "Tahun tidak boleh kosong";
+      isValid = false;
+    }
+
+    if (!formData.prestasi) {
+      newErrors.prestasi = "Prestasi tidak boleh kosong";
       isValid = false;
     }
 
@@ -106,7 +124,9 @@ export default function Organisasi() {
     return isValid;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -125,33 +145,6 @@ export default function Organisasi() {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validasi ukuran file (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        setErrors((prev) => ({
-          ...prev,
-          image: "Ukuran file tidak boleh lebih dari 2MB",
-        }));
-        return;
-      }
-
-      // Preview image
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      setFormData((prev) => ({
-        ...prev,
-        image: file.name,
-      }));
-      setErrors((prev) => ({ ...prev, image: "" }));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -166,7 +159,7 @@ export default function Organisasi() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Example API call:
-      // await fetch('/api/organisasi', {
+      // await fetch('/api/prestasi', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify(formData)
@@ -174,27 +167,28 @@ export default function Organisasi() {
 
       // Simulasi penambahan data baru ke tabel
       const newId =
-        organisasiData.length > 0
-          ? Math.max(...organisasiData.map((item) => item.id)) + 1
+        prestasiData.length > 0
+          ? Math.max(...prestasiData.map((item) => item.id)) + 1
           : 1;
       const selectedUser = users.find((user) => user.id === formData.user_id);
 
-      setOrganisasiData([
-        ...organisasiData,
+      setPrestasiData([
+        ...prestasiData,
         {
           id: newId,
           user_id: formData.user_id,
           user_name: selectedUser?.name || "",
-          jabatan: formData.jabatan,
-          nama: formData.nama,
-          image: formData.image || "/placeholder.jpg",
+          title: formData.title,
+          tahun: formData.tahun,
+          prestasi: formData.prestasi,
+          deskripsi: formData.deskripsi,
           created_at: new Date().toISOString().split("T")[0],
         },
       ]);
 
       console.log("Form submitted with data:", formData);
       toast.success("Berhasil", {
-        description: "Data organisasi berhasil ditambahkan",
+        description: "Data prestasi berhasil ditambahkan",
       });
 
       // Reset form
@@ -212,35 +206,25 @@ export default function Organisasi() {
   const resetForm = () => {
     setFormData({
       user_id: "",
-      jabatan: "",
-      nama: "",
-      image: "",
+      title: "",
+      tahun: "",
+      prestasi: "",
+      deskripsi: "",
     });
-    setImagePreview(null);
     setErrors({
       user_id: "",
-      jabatan: "",
-      nama: "",
-      image: "",
+      title: "",
+      tahun: "",
+      prestasi: "",
+      deskripsi: "",
     });
-  };
-
-  const handleDelete = (id: number) => {
-    // Konfirmasi penghapusan
-    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      // Filter data yang tidak dihapus
-      setOrganisasiData(organisasiData.filter((item) => item.id !== id));
-      toast.success("Berhasil", {
-        description: "Data berhasil dihapus",
-      });
-    }
   };
 
   return (
     <div className="mx-auto py-6">
       <Toaster position="top-center" />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Organisasi</h1>
+        <h1 className="text-2xl md:text-3xl font-bold">Prestasi</h1>
         <Link href="/dashboard">
           <Button variant="outline">Kembali ke Dashboard</Button>
         </Link>
@@ -249,9 +233,9 @@ export default function Organisasi() {
       {/* Form untuk tambah data */}
       <Card className="w-full shadow-md mb-8">
         <CardHeader className="bg-gray-50">
-          <CardTitle>Tambah Organisasi Baru</CardTitle>
+          <CardTitle>Tambah Prestasi Baru</CardTitle>
           <CardDescription>
-            Masukkan data organisasi baru di bawah ini
+            Masukkan data prestasi baru di bawah ini
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -281,66 +265,69 @@ export default function Organisasi() {
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="jabatan">
-                Jabatan <span className="text-red-500">*</span>
+              <Label htmlFor="title">
+                Judul Prestasi <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="jabatan"
-                name="jabatan"
-                placeholder="Masukkan jabatan"
-                value={formData.jabatan}
+                id="title"
+                name="title"
+                placeholder="Masukkan judul prestasi"
+                value={formData.title}
                 onChange={handleChange}
-                className={errors.jabatan ? "border-red-500" : ""}
+                className={errors.title ? "border-red-500" : ""}
               />
-              {errors.jabatan && (
-                <p className="text-sm text-red-500">{errors.jabatan}</p>
+              {errors.title && (
+                <p className="text-sm text-red-500">{errors.title}</p>
               )}
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="nama">
-                Nama <span className="text-red-500">*</span>
+              <Label htmlFor="tahun">
+                Tahun <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="nama"
-                name="nama"
-                placeholder="Masukkan nama"
-                value={formData.nama}
+                id="tahun"
+                name="tahun"
+                placeholder="Masukkan tahun"
+                value={formData.tahun}
                 onChange={handleChange}
-                className={errors.nama ? "border-red-500" : ""}
+                className={errors.tahun ? "border-red-500" : ""}
               />
-              {errors.nama && (
-                <p className="text-sm text-red-500">{errors.nama}</p>
+              {errors.tahun && (
+                <p className="text-sm text-red-500">{errors.tahun}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="image">Gambar</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  id="image"
-                  name="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className={errors.image ? "border-red-500" : ""}
-                />
-                {imagePreview && (
-                  <div className="relative h-16 w-16 rounded-md overflow-hidden border">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                )}
-              </div>
-              <p className="text-sm text-gray-500">
-                Format yang diizinkan: JPG, PNG, GIF. Maks 2MB.
-              </p>
-              {errors.image && (
-                <p className="text-sm text-red-500">{errors.image}</p>
+            <div className="space-y-1">
+              <Label htmlFor="prestasi">
+                Prestasi <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="prestasi"
+                name="prestasi"
+                placeholder="Masukkan prestasi"
+                value={formData.prestasi}
+                onChange={handleChange}
+                className={errors.prestasi ? "border-red-500" : ""}
+              />
+              {errors.prestasi && (
+                <p className="text-sm text-red-500">{errors.prestasi}</p>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="deskripsi">Deskripsi</Label>
+              <Textarea
+                id="deskripsi"
+                name="deskripsi"
+                placeholder="Masukkan deskripsi prestasi"
+                value={formData.deskripsi}
+                onChange={handleChange}
+                rows={4}
+                className={errors.deskripsi ? "border-red-500" : ""}
+              />
+              {errors.deskripsi && (
+                <p className="text-sm text-red-500">{errors.deskripsi}</p>
               )}
             </div>
           </CardContent>
@@ -376,9 +363,9 @@ export default function Organisasi() {
       {/* Table untuk menampilkan data */}
       <Card className="w-full shadow-md">
         <CardHeader className="bg-gray-50">
-          <CardTitle>Data Organisasi</CardTitle>
+          <CardTitle>Data Prestasi</CardTitle>
           <CardDescription>
-            Daftar semua data organisasi yang tersimpan dalam sistem
+            Daftar semua data prestasi yang tersimpan dalam sistem
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
@@ -393,16 +380,16 @@ export default function Organisasi() {
                     User
                   </th>
                   <th className="py-3 px-4 text-left font-medium text-gray-500">
-                    Jabatan
+                    Judul
                   </th>
                   <th className="py-3 px-4 text-left font-medium text-gray-500">
-                    Nama
+                    Tahun
                   </th>
                   <th className="py-3 px-4 text-left font-medium text-gray-500">
-                    Gambar
+                    Prestasi
                   </th>
                   <th className="py-3 px-4 text-left font-medium text-gray-500">
-                    Tanggal
+                    Deskripsi
                   </th>
                   <th className="py-3 px-4 text-left font-medium text-gray-500">
                     Aksi
@@ -410,29 +397,19 @@ export default function Organisasi() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {organisasiData.length > 0 ? (
-                  organisasiData.map((item, index) => (
+                {prestasiData.length > 0 ? (
+                  prestasiData.map((item, index) => (
                     <tr key={item.id} className="hover:bg-gray-50">
                       <td className="py-3 px-4">{index + 1}</td>
                       <td className="py-3 px-4">{item.user_name}</td>
-                      <td className="py-3 px-4">{item.jabatan}</td>
-                      <td className="py-3 px-4">{item.nama}</td>
+                      <td className="py-3 px-4">{item.title}</td>
+                      <td className="py-3 px-4">{item.tahun}</td>
+                      <td className="py-3 px-4">{item.prestasi}</td>
                       <td className="py-3 px-4">
-                        <div className="h-10 w-10 rounded-md overflow-hidden border">
-                          <Image
-                            width={40}
-                            height={40}
-                            src={item.image}
-                            alt={item.nama}
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "/placeholder.jpg";
-                            }}
-                          />
+                        <div className="max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">
+                          {item.deskripsi}
                         </div>
                       </td>
-                      <td className="py-3 px-4">{item.created_at}</td>
                       <td className="py-3 px-4">
                         <div className="flex space-x-2">
                           <Button
@@ -440,9 +417,6 @@ export default function Organisasi() {
                             size="icon"
                             className="h-8 w-8 cursor-pointer text-blue-500"
                             title="Lihat"
-                            onClick={() =>
-                              router.push(`/dashboard/organisasi/${item.id}`)
-                            }
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -460,7 +434,7 @@ export default function Organisasi() {
                             className="h-8 w-8 cursor-pointer text-red-500 "
                             title="Hapus"
                             onClick={() => {
-                              // Menggunakan toast.promise dengan konfirmasi
+                              // Menggunakan toast.custom dengan konfirmasi
                               toast.custom(
                                 (t) => (
                                   <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
@@ -486,8 +460,8 @@ export default function Organisasi() {
                                         className="cursor-pointer"
                                         onClick={() => {
                                           // Proses hapus data
-                                          setOrganisasiData(
-                                            organisasiData.filter(
+                                          setPrestasiData(
+                                            prestasiData.filter(
                                               (data) => data.id !== item.id
                                             )
                                           );
@@ -519,7 +493,7 @@ export default function Organisasi() {
                 ) : (
                   <tr>
                     <td colSpan={7} className="py-6 text-center text-gray-500">
-                      Belum ada data organisasi
+                      Belum ada data prestasi
                     </td>
                   </tr>
                 )}
@@ -529,7 +503,7 @@ export default function Organisasi() {
         </CardContent>
         <CardFooter className="flex justify-between border-t py-4 bg-gray-50">
           <div className="text-sm text-gray-500">
-            Menampilkan {organisasiData.length} data
+            Menampilkan {prestasiData.length} data
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled>

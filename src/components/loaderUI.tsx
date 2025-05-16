@@ -1,0 +1,25 @@
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export function LoadingIndicator() {
+  const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const timer: NodeJS.Timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    setIsLoading(true);
+
+    return () => clearTimeout(timer);
+  }, [pathname, searchParams]);
+
+  if (!isLoading) return null;
+
+  return (
+    <div className="absolute w-auto md:ml-4  h-screen inset-0 bg-background/80 backdrop-blur-sm z-40 flex items-center justify-center">
+      <div className="loader "></div>
+    </div>
+  );
+}
