@@ -13,7 +13,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // This is a client component feature, so we need to use it in a client component
   return (
     <html lang="en" className={`scroll-smooth`}>
       <body className="min-h-screen bg-background font-sans antialiased">
@@ -39,12 +38,11 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
     <>
       {isDashboardRoute ? (
         <div className="flex flex-col md:flex-row">
-          {/* Sidebar - fixed position when scrolling */}
           <div className="md:hidden flex items-center justify-between bg-gradient-to-r from-blue-700 to-sky-500 text-white p-4">
             <h1 className="text-xl font-bold">Mimin Sitemu</h1>
             <button
               onClick={toggleMobileSidebar}
-              className="p-2 rounded-md hover:bg-gray-800"
+              className="p-2 rounded-md hover:bg-gray-800 cursor-pointer"
             >
               {isMobileSidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -58,7 +56,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
             <nav className="relative">
               <button
                 onClick={toggleMobileSidebar}
-                className="md:hidden  absolute top-0 right-0 p-2 text-white hover:text-gray-300"
+                className="md:hidden cursor-pointer z-[60]  absolute top-0 right-0 p-2 text-white hover:text-gray-300"
               >
                 <X size={24} />
               </button>
@@ -74,7 +72,6 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
               </button>
 
               <div className="h-12 mb-6 relative">
-                {/* Title with absolute positioning */}
                 <div
                   className={`absolute inset-0 flex items-center transition-all duration-1000 ease-in-out ${
                     isSidebarCollapsed
@@ -91,7 +88,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                       : "md:transform -translate-x-50"
                   }`}
                 >
-                  <h1 className="text-xl font-bold">MS</h1>
+                  <h1 className="text-xl italic font-bold">MS</h1>
                 </div>
               </div>
               <ul className="space-y-2">
@@ -152,7 +149,6 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
             </div>
           </aside>
 
-          {/* Main Content - add left padding on medium screens to account for fixed sidebar */}
           <main
             className={`relative flex-1 p-6 transition-all duration-300 ${
               isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
@@ -163,7 +159,6 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
       ) : (
-        // For non-dashboard routes, just render the children without sidebar
         <main>{children}</main>
       )}
     </>

@@ -23,14 +23,12 @@ import {
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulasi loading data
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
   }, []);
 
-  // Data dummy untuk statistik
   const stats = [
     {
       title: "Total Organisasi",
@@ -58,7 +56,6 @@ export default function Dashboard() {
     },
   ];
 
-  // Data dummy untuk aktivitas terbaru
   const recentActivities = [
     {
       id: 1,
@@ -86,7 +83,6 @@ export default function Dashboard() {
     },
   ];
 
-  // Data dummy untuk quick links
   const quickLinks = [
     {
       title: "Tambah Berita",
@@ -125,7 +121,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Statistik Overview */}
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <Card
@@ -154,7 +149,6 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Grafik Aktivitas */}
         <Card className="lg:col-span-2 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium">
@@ -171,7 +165,6 @@ export default function Dashboard() {
               ) : (
                 <div className="w-full h-full p-4">
                   <div className="flex items-end justify-between h-56 w-full">
-                    {/* Dummy chart bars */}
                     <div className="w-1/12 bg-blue-500 h-20 rounded-t"></div>
                     <div className="w-1/12 bg-blue-500 h-28 rounded-t"></div>
                     <div className="w-1/12 bg-blue-500 h-16 rounded-t"></div>
@@ -205,7 +198,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Distribusi Konten */}
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium">
@@ -219,7 +211,6 @@ export default function Dashboard() {
                 <div className="text-sm text-gray-500">Loading chart...</div>
               ) : (
                 <div className="relative w-48 h-48">
-                  {/* Simple pie chart representation */}
                   <svg viewBox="0 0 100 100" className="w-full h-full">
                     <circle
                       cx="50"
@@ -291,7 +282,6 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Aktivitas Terbaru */}
         <Card className="lg:col-span-2 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium">
@@ -338,7 +328,6 @@ export default function Dashboard() {
           </CardFooter>
         </Card>
 
-        {/* Quick Links & Calendar */}
         <div className="space-y-6">
           <Card className="shadow-sm">
             <CardHeader className="pb-2">

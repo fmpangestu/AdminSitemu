@@ -26,14 +26,12 @@ import { Toaster, toast } from "sonner";
 import { Loader2, Pencil, Trash, Eye, Plus } from "lucide-react";
 import Image from "next/image";
 
-// Dummy data untuk user dropdown
 const users = [
   { id: "1", name: "Admin Utama" },
   { id: "2", name: "Manager" },
   { id: "3", name: "Staff" },
 ];
 
-// Dummy data untuk tipe galeri
 const typeGaleriDummyData = [
   {
     id: 1,
@@ -65,7 +63,6 @@ const typeGaleriDummyData = [
   },
 ];
 
-// Dummy data untuk galeri
 const galeriDummyData = [
   {
     id: 1,
@@ -117,7 +114,6 @@ export default function Galeri() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedGalleryType, setSelectedGalleryType] = useState<string>("all");
 
-  // State untuk tipe galeri
   const [typeGaleriData, setTypeGaleriData] = useState(typeGaleriDummyData);
   const [typeFormData, setTypeFormData] = useState({
     user_id: "",
@@ -128,7 +124,6 @@ export default function Galeri() {
     type: "",
   });
 
-  // State untuk galeri
   const [galeriData, setGaleriData] = useState(galeriDummyData);
   const [galeriFormData, setGaleriFormData] = useState({
     type_galeri_id: "",
@@ -141,7 +136,6 @@ export default function Galeri() {
     title_image: "",
   });
 
-  // Validasi form tipe galeri
   const validateTypeForm = () => {
     let isValid = true;
     const newErrors = { user_id: "", type: "" };
@@ -160,7 +154,6 @@ export default function Galeri() {
     return isValid;
   };
 
-  // Validasi form galeri
   const validateGaleriForm = () => {
     let isValid = true;
     const newErrors = { type_galeri_id: "", image: "", title_image: "" };
@@ -179,7 +172,6 @@ export default function Galeri() {
     return isValid;
   };
 
-  // Handler untuk form tipe galeri
   const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTypeFormData((prev) => ({
@@ -198,7 +190,6 @@ export default function Galeri() {
     }
   };
 
-  // Handler untuk form galeri
   const handleGaleriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setGaleriFormData((prev) => ({
@@ -220,7 +211,6 @@ export default function Galeri() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validasi ukuran file (max 2MB)
       if (file.size > 2 * 1024 * 1024) {
         setGaleriErrors((prev) => ({
           ...prev,
@@ -229,7 +219,6 @@ export default function Galeri() {
         return;
       }
 
-      // Preview image
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -244,7 +233,6 @@ export default function Galeri() {
     }
   };
 
-  // Submit tipe galeri
   const handleTypeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -255,10 +243,8 @@ export default function Galeri() {
     setIsLoadingType(true);
 
     try {
-      // Simulasi API call dengan timeout
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Simulasi penambahan data baru ke tabel
       const newId =
         typeGaleriData.length > 0
           ? Math.max(...typeGaleriData.map((item) => item.id)) + 1
@@ -281,7 +267,6 @@ export default function Galeri() {
         description: "Tipe galeri berhasil ditambahkan",
       });
 
-      // Reset form
       resetTypeForm();
     } catch (error) {
       toast.error("Error", {
@@ -292,7 +277,6 @@ export default function Galeri() {
     }
   };
 
-  // Submit galeri
   const handleGaleriSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -303,10 +287,8 @@ export default function Galeri() {
     setIsLoadingGaleri(true);
 
     try {
-      // Simulasi API call dengan timeout
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Simulasi penambahan data baru ke tabel
       const newId =
         galeriData.length > 0
           ? Math.max(...galeriData.map((item) => item.id)) + 1
@@ -342,7 +324,6 @@ export default function Galeri() {
     }
   };
 
-  // Reset form
   const resetTypeForm = () => {
     setTypeFormData({
       user_id: "",
@@ -368,7 +349,6 @@ export default function Galeri() {
     });
   };
 
-  // Delete handlers
   const handleDeleteType = (id: number) => {
     toast.custom(
       (t) => (
@@ -392,12 +372,10 @@ export default function Galeri() {
               size="sm"
               className="cursor-pointer"
               onClick={() => {
-                // Hapus data tipe galeri
                 setTypeGaleriData(
                   typeGaleriData.filter((item) => item.id !== id)
                 );
 
-                // Hapus galeri yang terkait dengan tipe ini
                 setGaleriData(
                   galeriData.filter((item) => item.type_galeri_id !== id)
                 );
@@ -463,7 +441,6 @@ export default function Galeri() {
     );
   };
 
-  // Filter galeri berdasarkan tipe
   const filteredGaleri =
     selectedGalleryType === "all"
       ? galeriData
@@ -493,9 +470,8 @@ export default function Galeri() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab untuk manajemen galeri */}
+        {/* halaman dan form galeri */}
         <TabsContent value="gallery" className="space-y-8">
-          {/* Form tambah galeri */}
           <Card className="w-full shadow-md">
             <CardHeader className="bg-gray-50">
               <CardTitle>Tambah Galeri Baru</CardTitle>
@@ -616,7 +592,7 @@ export default function Galeri() {
             </form>
           </Card>
 
-          {/* Tabel galeri */}
+          {/* galeri halaman nich */}
           <Card className="w-full shadow-md">
             <CardHeader className="bg-gray-50">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -631,13 +607,19 @@ export default function Galeri() {
                   value={selectedGalleryType}
                   onValueChange={setSelectedGalleryType}
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[180px] cursor-pointer">
                     <SelectValue placeholder="Filter by type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Semua Tipe</SelectItem>
+                    <SelectItem value="all" className="cursor-pointer">
+                      Semua Tipe
+                    </SelectItem>
                     {typeGaleriData.map((type) => (
-                      <SelectItem key={type.id} value={type.type}>
+                      <SelectItem
+                        className="cursor-pointer"
+                        key={type.id}
+                        value={type.type}
+                      >
                         {type.type}
                       </SelectItem>
                     ))}
@@ -751,9 +733,7 @@ export default function Galeri() {
           </Card>
         </TabsContent>
 
-        {/* Tab untuk manajemen tipe galeri */}
         <TabsContent value="types" className="space-y-8">
-          {/* Form tambah tipe galeri */}
           <Card className="w-full shadow-md">
             <CardHeader className="bg-gray-50">
               <CardTitle>Tambah Tipe Galeri Baru</CardTitle>
@@ -836,7 +816,6 @@ export default function Galeri() {
             </form>
           </Card>
 
-          {/* Tabel tipe galeri */}
           <Card className="w-full shadow-md">
             <CardHeader className="bg-gray-50">
               <CardTitle>Data Tipe Galeri</CardTitle>

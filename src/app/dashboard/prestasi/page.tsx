@@ -87,7 +87,6 @@ export default function Prestasi() {
     deskripsi: "",
   });
 
-  // State untuk tabel
   const [prestasiData, setPrestasiData] = useState(prestasiDummyData);
 
   const validateForm = () => {
@@ -132,7 +131,7 @@ export default function Prestasi() {
       ...prev,
       [name]: value,
     }));
-    // Clear error when field is edited
+
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -155,7 +154,6 @@ export default function Prestasi() {
     setIsLoading(true);
 
     try {
-      // Simulasi API call dengan timeout
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Example API call:
@@ -165,7 +163,6 @@ export default function Prestasi() {
       //   body: JSON.stringify(formData)
       // });
 
-      // Simulasi penambahan data baru ke tabel
       const newId =
         prestasiData.length > 0
           ? Math.max(...prestasiData.map((item) => item.id)) + 1
@@ -191,7 +188,6 @@ export default function Prestasi() {
         description: "Data prestasi berhasil ditambahkan",
       });
 
-      // Reset form
       resetForm();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -230,7 +226,6 @@ export default function Prestasi() {
         </Link>
       </div>
 
-      {/* Form untuk tambah data */}
       <Card className="w-full shadow-md mb-8">
         <CardHeader className="bg-gray-50">
           <CardTitle>Tambah Prestasi Baru</CardTitle>
@@ -360,7 +355,6 @@ export default function Prestasi() {
         </form>
       </Card>
 
-      {/* Table untuk menampilkan data */}
       <Card className="w-full shadow-md">
         <CardHeader className="bg-gray-50">
           <CardTitle>Data Prestasi</CardTitle>
@@ -434,7 +428,6 @@ export default function Prestasi() {
                             className="h-8 w-8 cursor-pointer text-red-500 "
                             title="Hapus"
                             onClick={() => {
-                              // Menggunakan toast.custom dengan konfirmasi
                               toast.custom(
                                 (t) => (
                                   <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
@@ -459,7 +452,6 @@ export default function Prestasi() {
                                         size="sm"
                                         className="cursor-pointer"
                                         onClick={() => {
-                                          // Proses hapus data
                                           setPrestasiData(
                                             prestasiData.filter(
                                               (data) => data.id !== item.id
@@ -478,7 +470,7 @@ export default function Prestasi() {
                                   </div>
                                 ),
                                 {
-                                  duration: Infinity, // Tidak otomatis menghilang
+                                  duration: Infinity,
                                   position: "top-center",
                                 }
                               );

@@ -25,14 +25,12 @@ import { Toaster, toast } from "sonner";
 import { Loader2, Pencil, Trash, Eye } from "lucide-react";
 import Image from "next/image";
 
-// Dummy data untuk user dropdown - nanti bisa diganti dengan data dari API
 const users = [
   { id: "1", name: "Admin Utama" },
   { id: "2", name: "Manager" },
   { id: "3", name: "Staff" },
 ];
 
-// Dummy data untuk tabel organisasi
 const organisasiDummyData = [
   {
     id: 1,
@@ -80,7 +78,6 @@ export default function Organisasi() {
     image: "",
   });
 
-  // State untuk tabel
   const [organisasiData, setOrganisasiData] = useState(organisasiDummyData);
 
   const validateForm = () => {
@@ -112,7 +109,7 @@ export default function Organisasi() {
       ...prev,
       [name]: value,
     }));
-    // Clear error when field is edited
+
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -137,7 +134,6 @@ export default function Organisasi() {
         return;
       }
 
-      // Preview image
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -162,7 +158,6 @@ export default function Organisasi() {
     setIsLoading(true);
 
     try {
-      // Simulasi API call dengan timeout
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Example API call:
@@ -172,7 +167,6 @@ export default function Organisasi() {
       //   body: JSON.stringify(formData)
       // });
 
-      // Simulasi penambahan data baru ke tabel
       const newId =
         organisasiData.length > 0
           ? Math.max(...organisasiData.map((item) => item.id)) + 1
@@ -197,7 +191,6 @@ export default function Organisasi() {
         description: "Data organisasi berhasil ditambahkan",
       });
 
-      // Reset form
       resetForm();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -226,9 +219,7 @@ export default function Organisasi() {
   };
 
   const handleDelete = (id: number) => {
-    // Konfirmasi penghapusan
     if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      // Filter data yang tidak dihapus
       setOrganisasiData(organisasiData.filter((item) => item.id !== id));
       toast.success("Berhasil", {
         description: "Data berhasil dihapus",
@@ -246,7 +237,6 @@ export default function Organisasi() {
         </Link>
       </div>
 
-      {/* Form untuk tambah data */}
       <Card className="w-full shadow-md mb-8">
         <CardHeader className="bg-gray-50">
           <CardTitle>Tambah Organisasi Baru</CardTitle>
@@ -373,7 +363,6 @@ export default function Organisasi() {
         </form>
       </Card>
 
-      {/* Table untuk menampilkan data */}
       <Card className="w-full shadow-md">
         <CardHeader className="bg-gray-50">
           <CardTitle>Data Organisasi</CardTitle>
@@ -460,7 +449,6 @@ export default function Organisasi() {
                             className="h-8 w-8 cursor-pointer text-red-500 "
                             title="Hapus"
                             onClick={() => {
-                              // Menggunakan toast.promise dengan konfirmasi
                               toast.custom(
                                 (t) => (
                                   <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
@@ -485,7 +473,6 @@ export default function Organisasi() {
                                         size="sm"
                                         className="cursor-pointer"
                                         onClick={() => {
-                                          // Proses hapus data
                                           setOrganisasiData(
                                             organisasiData.filter(
                                               (data) => data.id !== item.id
@@ -504,7 +491,7 @@ export default function Organisasi() {
                                   </div>
                                 ),
                                 {
-                                  duration: Infinity, // Tidak otomatis menghilang
+                                  duration: Infinity,
                                   position: "top-center",
                                 }
                               );
