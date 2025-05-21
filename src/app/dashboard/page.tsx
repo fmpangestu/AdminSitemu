@@ -22,8 +22,13 @@ import {
 
 export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
+  const [username, setUsername] = useState("Admin");
 
   useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -111,7 +116,7 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h1 className="text-2xl md:text-3xl font-bold">Dashboard</h1>
         <div className="text-sm text-gray-500">
-          Selamat datang, Admin |{" "}
+          Selamat datang, <span className="font-medium">{username}</span> |{" "}
           {new Date().toLocaleDateString("id-ID", {
             weekday: "long",
             day: "numeric",

@@ -1,13 +1,37 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./globals.css";
 import { navigationItems } from "./types/navigationItem";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LogOut, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
 import { LoadingIndicator } from "@/components/loaderUI";
+import { useRouter } from "next/navigation";
 
+function AuthSynchronizer() {
+  useEffect(() => {
+    // Sinkronkan token dari localStorage ke cookie untuk middleware
+    const syncAuthState = () => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
+      } else {
+        document.cookie =
+          "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    };
+
+    // Jalankan saat komponen mount
+    syncAuthState();
+
+    // Tambahkan event listener untuk storage changes (jika user logout di tab lain)
+    window.addEventListener("storage", syncAuthState);
+    return () => window.removeEventListener("storage", syncAuthState);
+  }, []);
+
+  return null;
+}
 export default function RootLayout({
   children,
 }: {
@@ -16,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`scroll-smooth`}>
       <body className="min-h-screen bg-background font-sans antialiased">
+        <AuthSynchronizer />
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
@@ -23,12 +48,16 @@ export default function RootLayout({
 }
 
 function ClientLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const pathname = usePathname();
   const isDashboardRoute = pathname?.startsWith("/dashboard");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
+  const toggleSidebar = (e?: { stopPropagation: () => void }) => {
+    if (e) e.stopPropagation();
+    setTimeout(() => {
+      setIsSidebarCollapsed((prev) => !prev);
+    }, 10);
   };
   const toggleMobileSidebar = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen);
@@ -61,7 +90,10 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                 <X size={24} />
               </button>
               <button
-                onClick={toggleSidebar}
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleSidebar();
+                }}
                 className="hidden md:flex cursor-pointer absolute -right-3 -bottom-10 bg-gradient-to-r from-blue-700 to-sky-500 text-white p-1 rounded-full border border-blue-600 hover:bg-blue-800 "
               >
                 {isSidebarCollapsed ? (
@@ -137,11 +169,17 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                 <LogOut />
               </Button>
               <Button
+                onClick={() => {
+                  localStorage.removeItem("authToken");
+                  document.cookie =
+                    "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                  router.push("/");
+                }}
                 className={`${
                   isSidebarCollapsed
-                    ? "transform -translate-x-40 transition-all duration-600 ease-in-out  "
-                    : "md:flex  transition-all duration-1000 ease-in-out"
-                }  mt-6 items-center text-center justify-center gap-4 w-full bg-red-600 hover:bg-red-700 transition cursor-pointer`}
+                    ? "transform -translate-x-40 transition-all duration-600 ease-in-out"
+                    : "md:flex transition-all duration-1000 ease-in-out"
+                } mt-6 items-center text-center justify-center gap-4 w-full bg-red-600 hover:bg-red-700 transition cursor-pointer`}
               >
                 <LogOut />
                 <p className="text-sm">Keluar</p>

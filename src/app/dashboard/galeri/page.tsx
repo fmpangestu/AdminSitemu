@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -135,6 +135,14 @@ export default function Galeri() {
     image: "",
     title_image: "",
   });
+  const [username, setUsername] = useState("Admin");
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   const validateTypeForm = () => {
     let isValid = true;
@@ -451,9 +459,15 @@ export default function Galeri() {
       <Toaster position="top-center" />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h1 className="text-2xl md:text-3xl font-bold">Galeri</h1>
-        <Link href="/dashboard">
-          <Button variant="outline">Kembali ke Dashboard</Button>
-        </Link>
+        <div className="text-sm text-gray-500">
+          Selamat datang, <span className="font-medium">{username}</span> |{" "}
+          {new Date().toLocaleDateString("id-ID", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+        </div>
       </div>
 
       <Tabs
